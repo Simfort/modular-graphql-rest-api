@@ -22,6 +22,7 @@ export const createPost = (data: Partial<Post>) => {
     throw e;
   }
 };
+
 export const getPostById = (id: string) => {
   const post =
     (db
@@ -59,6 +60,7 @@ export const getPostById = (id: string) => {
   }
   return null;
 };
+
 export const deletePostById = (post_id: string, author_id: string) => {
   const stmt = db.prepare(
     `--sql
@@ -74,4 +76,21 @@ export const deletePostById = (post_id: string, author_id: string) => {
     changes: result.changes,
     post_id,
   };
+};
+
+export const getPostsOffset = (limit: number, offset: number) => {
+  const posts = db
+    .prepare(
+      `--sql
+    SELECT id,title,description,created_at
+    FROM posts
+    ORDER BY created_at DESC 
+    LIMIT ? OFFSET ?
+    `,
+    )
+    .all(limit, offset);
+  const { total } = db.prepare("SELECT COUNT(*) AS total FROM posts").get() as {
+    total: number;
+  };
+  return { posts, total };
 };

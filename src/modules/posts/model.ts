@@ -4,7 +4,7 @@ export const SQL_POSTS = `--sql
         title VARCHAR(255) NOT NULL,
         description VARCHAR(255),
         author_id VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT fk_posts_user
             FOREIGN KEY (author_id)
             REFERENCES users(id)
