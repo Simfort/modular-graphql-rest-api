@@ -42,12 +42,9 @@ export const create = async (req: Request, res: Response) => {
 };
 export const auth = async (req: Request, res: Response) => {
   try {
-    const sessionToken = req.cookies["session-token"];
-    if (sessionToken) {
-      const user = checkAuth(sessionToken);
-      if (user) {
-        return res.status(200).json({ data: user });
-      }
+    const user = checkAuth(req.cookies["session-token"]);
+    if (user) {
+      return res.status(200).json({ data: user });
     }
 
     return res.status(401).json({

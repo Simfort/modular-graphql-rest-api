@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { auth, create, logout } from "./controller.js";
 
-export const authRouter = Router();
+export const routerAuth = Router();
 
-authRouter.post("/", create);
-authRouter.get("/", auth);
-authRouter.get("/actions/logout", logout);
+routerAuth.post("/", create);
+routerAuth.get("/", auth);
+routerAuth.get("/actions/logout", logout);
