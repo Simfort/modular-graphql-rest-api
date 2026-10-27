@@ -26,8 +26,11 @@ const PORT = process.env.PORT || 3000;
 await apolloServer.start();
 
 app.use(cors({ origin: "*" }), cookieParser(), express.json());
-app.use("/graphql", expressMiddleware(apolloServer, { context: contextAuth }));
-app.use("/v1", routerV1);
+app.use(
+  "/graphql/v1",
+  expressMiddleware(apolloServer, { context: contextAuth }),
+);
+app.use("/api/v1", routerV1);
 
 app.listen(PORT, () => {
   console.log("http://localhost:" + PORT);
