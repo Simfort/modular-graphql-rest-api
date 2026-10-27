@@ -22,7 +22,7 @@ export const createPost = (data: Partial<Post>) => {
     throw e;
   }
 };
-export const getPost = (id: string) => {
+export const getPostById = (id: string) => {
   const post =
     (db
       .prepare(

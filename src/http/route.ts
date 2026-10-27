@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { routerPosts } from "./modules/posts/route.js";
-import { routerAuth } from "./modules/auth/route.js";
+import { routerAuth } from "../modules/auth/index.js";
+import { routerPosts } from "../modules/posts/index.js";
 
 export const routerV1 = Router();
 routerV1.use("/auth", routerAuth);

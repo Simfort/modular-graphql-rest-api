@@ -1,6 +1,6 @@
-import type { Context } from "../../../graphql/context.js";
-import { db } from "../../../shared/db.js";
-import type { User } from "../model.js";
+import type { Context } from "../../../../../graphql/context.js";
+import { db } from "../../../../../shared/db.js";
+import type { User } from "../../../model.js";
 
 type UpdateUserArgs = {
   data: Partial<Pick<User, "id" | "email" | "firstname" | "lastname">>;

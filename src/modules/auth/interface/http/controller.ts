@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ValidCreateUserSchema } from "../schemas/ValidCreateUserSchema.js";
+import { ValidCreateUserSchema } from "../validation/ValidCreateUserSchema.js";
 import { createUser, deleteUserById } from "../../services/user.js";
 import { checkAuth, createToken } from "../../services/auth.js";
 import { JWT_OPTION } from "../../../../shared/constants.js";
