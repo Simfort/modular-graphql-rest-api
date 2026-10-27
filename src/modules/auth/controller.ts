@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
 import { ValidCreateUserSchema } from "./schemas/ValidCreateUserSchema.js";
-import { createUser } from "./services/user.js";
+import { createUser, deleteUserById } from "./services/user.js";
 import { checkAuth, createToken } from "./services/auth.js";
 import { JWT_OPTION } from "../../shared/constants.js";
-import type { User } from "./model.js";
 
 export const create = async (req: Request, res: Response) => {
   const validation = ValidCreateUserSchema.safeParse(req.body);
@@ -60,9 +59,46 @@ export const auth = async (req: Request, res: Response) => {
     });
   }
 };
+export const deleteUser = (req: Request, res: Response) => {
+  try {
+    const user = checkAuth(req.cookies["session-token"]);
+    if (user) {
+      const result = deleteUserById(user.id);
+      if (result.deleted) {
+        res.clearCookie("session-token", JWT_OPTION);
+        return res.status(200).json({
+          data: {
+            message: "You deleted successfully",
+            changes: result.changes,
+            user_id: result.user_id,
+          },
+        });
+      }
+      return res.status(404).json({
+        error: {
+          message: "Your account not found",
+          code: "NOT_FOUND",
+        },
+      });
+    }
+
+    return res.status(401).json({
+      error: { message: "User isn`t authuficated", code: "AUTH_ERROR" },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: {
+        message: "Internal Server Error",
+        code: "INTERNAL_SERVER_ERROR",
+      },
+    });
+  }
+};
+
 export const logout = async (req: Request, res: Response) => {
   try {
-    res.clearCookie("sessionk-token", JWT_OPTION);
+    res.clearCookie("session-token", JWT_OPTION);
     return res.status(200).json({ data: { message: "Success logout" } });
   } catch (error) {
     return res.status(500).json({

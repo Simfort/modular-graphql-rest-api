@@ -12,17 +12,22 @@ export const createToken = (data: JWT_PAYLOAD) => {
 
 export const checkAuth = (token: string) => {
   if (!token) return null;
-  const user = jwt.verify(token, JWT_SECRET) as JWT_PAYLOAD;
+  try {
+    const user = jwt.verify(token, JWT_SECRET) as JWT_PAYLOAD;
 
-  const findedData =
-    db
-      .prepare(
-        `--sql
+    const findedData =
+      db
+        .prepare(
+          `--sql
         SELECT id,email FROM users
         WHERE email = ? AND id = ?
     `,
-      )
-      .get(user.email, user.id) || null;
+        )
+        .get(user.email, user.id) || null;
 
-  return findedData as JWT_PAYLOAD | null;
+    return findedData as JWT_PAYLOAD | null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };

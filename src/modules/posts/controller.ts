@@ -4,7 +4,7 @@ import { ValidCreatePostSchema } from "./schemas/ValidCreatePostSchema.js";
 import { createPost, deletePostById } from "./services/post.js";
 import { DatabaseError } from "../../shared/errors/DatabaseError.js";
 
-export const create = (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   try {
     const authUser = checkAuth(req.cookies["session-token"]);
     if (!authUser) {
@@ -22,7 +22,7 @@ export const create = (req: Request, res: Response) => {
         data: {
           id: post_id,
           title: data.title,
-          descripiton: data.description,
+          description: data.description,
         },
       });
     }
@@ -38,7 +38,7 @@ export const create = (req: Request, res: Response) => {
     if (error instanceof DatabaseError) {
       return res.status(404).json({
         error: {
-          message: "Author isn`t founded",
+          message: "Author not found",
           code: "AUTHOR_ID_ERROR",
         },
       });
@@ -51,13 +51,13 @@ export const create = (req: Request, res: Response) => {
     });
   }
 };
-export const deletePost = (req: Request, res: Response) => {
+export const deletePost = async (req: Request, res: Response) => {
   try {
     const authUser = checkAuth(req.cookies["session-token"]);
     const post_id = req.params.post_id as string;
     if (!authUser) {
       return res.status(401).json({
-        error: { message: "User isn`t authuficated", code: "AUTH_ERROR" },
+        error: { message: "User not authentified", code: "AUTH_ERROR" },
       });
     }
     const result = deletePostById(post_id, authUser.id);

@@ -16,3 +16,14 @@ export const createUser = async (data: CreateUserProps) => {
   ).run(user_id, data.firstname, data.lastname, hashPassword, data.email);
   return user_id;
 };
+export const deleteUserById = (user_id: string) => {
+  const stmt = db
+    .prepare(
+      `--sql
+    DELETE FROM users
+    WHERE id = ?
+    `,
+    )
+    .run(user_id);
+  return { deleted: stmt.changes > 0, changes: stmt.changes, user_id };
+};
