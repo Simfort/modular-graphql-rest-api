@@ -12,4 +12,3 @@ db.exec(SQL_POSTS);
 //   "password": "zalupa",
 //   "email": "lemonswwsdszasv514r@gmail.com"
 // }
-// seRU2ddBFsYk9oZH
