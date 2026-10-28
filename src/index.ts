@@ -7,6 +7,9 @@ import { routerV1 } from "./http/route.js";
 import { apolloServer } from "./graphql/server.js";
 import rateLimit from "express-rate-limit";
 
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./doc/options.js";
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const limiter = rateLimit({
@@ -21,6 +24,8 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(
   cors({
