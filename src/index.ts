@@ -5,13 +5,32 @@ import { expressMiddleware } from "@as-integrations/express5";
 import { contextAuth } from "./graphql/context.js";
 import { routerV1 } from "./http/route.js";
 import { apolloServer } from "./graphql/server.js";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: {
+      message: "Too many requests, please try again later.",
+      code: "LIMIT_REQUEST",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-app.use(cors());
+app.use(
+  cors({
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 app.use(express.json());
+app.use(limiter);
 
 app.use(
   "/graphql/v1",

@@ -14,4 +14,5 @@ export const JWT_OPTION: CookieOptions = {
   maxAge: MAX_AGE_SESSION_TOKEN,
   sameSite: "lax",
   httpOnly: true,
+  secure: process.env?.NODE_ENV === "production",
 };
