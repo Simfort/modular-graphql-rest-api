@@ -16,3 +16,4 @@ export const JWT_OPTION: CookieOptions = {
   httpOnly: true,
   secure: process.env?.NODE_ENV === "production",
 };
+export const TTL_CACHE = 1000 * 60 * 60;

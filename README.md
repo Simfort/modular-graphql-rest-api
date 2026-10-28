@@ -78,7 +78,7 @@ Local URL: `http://localhost:3000/api-docs`
 
 ```text
 src/
-├── doc/        # OpenAPI configuration
+├── doc/       # OpenAPI configuration
 ├── graphql/   # GraphQL server and context
 ├── http/      # API routing
 ├── modules/   # Auth and posts modules

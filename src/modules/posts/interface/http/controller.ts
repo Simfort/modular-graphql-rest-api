@@ -8,6 +8,8 @@ import {
   getPostsOffset,
 } from "../../services/post.js";
 import { DatabaseError } from "../../../../shared/errors/DatabaseError.js";
+import { getCache, setCache } from "../../../../shared/utils/cache.js";
+import { TTL_CACHE } from "../../../../shared/constants.js";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -95,7 +97,19 @@ export const getPost = async (req: Request, res: Response) => {
   try {
     const post_id = req.params.post_id as string;
 
+    const cache = getCache(post_id);
+
+    if (cache) {
+      return res.status(200).json({
+        data: {
+          ...cache,
+        },
+      });
+    }
+
     const post = getPostById(post_id);
+
+    setCache(post_id, post, TTL_CACHE);
     if (!post) {
       return res.status(404).json({
         error: {
@@ -119,12 +133,31 @@ export const getPost = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const getPosts = async (req: Request, res: Response) => {
   try {
     const page = Number(req.query.page) || 1;
     const pageSize = Number(req.query.pageSize) || 10;
     const offset = (page - 1) * pageSize;
+    const cacheKey = `p${page}s${pageSize}`;
+    const cache = getCache<ReturnType<typeof getPostsOffset>>(cacheKey);
+    if (cache) {
+      console.log(cache);
+      return res.status(200).json({
+        data: {
+          posts: cache.posts,
+          meta: {
+            total: cache.total,
+            pages: Math.ceil(cache.total / pageSize),
+            hasNext: offset + cache.posts.length < cache.total,
+            left: Math.abs(cache.total - page * pageSize),
+          },
+        },
+      });
+    }
+
     const result = getPostsOffset(pageSize, offset);
+    setCache(cacheKey, result, TTL_CACHE);
     return res.status(200).json({
       data: {
         posts: result.posts,
